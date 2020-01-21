@@ -24,7 +24,7 @@ public class Versuch {
     int eFeldSymbolSpitze = 15;
     int eFeldMinSymbolAbstand = 2 *eFeldSymbolSpitze;
     //Links:
-    double eFeldSpannung = 100;
+    long eFeldSpannung = 100;
     double eFeldLinksLadung = eFeldSpannung;
     int eFeldLinksPosX = 200;
     int eFeldLinksPosY = 100;
@@ -34,7 +34,7 @@ public class Versuch {
     double eFeldRechtsLadung = -eFeldLinksLadung;
 
     //M-Feld -----------------------------------------------------------------------------------------------------------
-    double mFeldLadung = -5;
+    double mFeldLadung = -10;
     int mFeldPosX;
     int mFeldPosY;
 
@@ -61,8 +61,8 @@ public class Versuch {
     Teilchen teilchen = new Teilchen(2, eFeldLinksPosX + eFeldWidth + (eFeldSpaltBreite / 2), eFeldLinksPosY + (eFeldHeight / 2), 0, 0, 3.14);
     int teilchenSize = 10;
 
-    double frequenz = 1;
-    int zeitlupe = 1;
+    double frequenz = 150000000;
+    long zeitlupe = 150000000;
     int fps = 30;
     JButton play;
 
@@ -146,7 +146,7 @@ public class Versuch {
         menuSonstiges.add(menuFrequenz);
 
         JPanel menuZeitlupe = new JPanel();
-        JSlider zeitlupeSlider = new JSlider();
+        //JSlider zeitlupeSlider = new JSlider();
         JTextField zeitlupeText = new JTextField();
         if (zeitlupe < 10) {
             zeitlupeText.setText("0" + String.valueOf(zeitlupe));
@@ -156,19 +156,19 @@ public class Versuch {
         zeitlupeText.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int i = 0;
+                long l = 0;
                 try {
-                    i = Integer.parseInt(zeitlupeText.getText());
+                    l = Long.parseLong(zeitlupeText.getText());
                 } catch (Exception ex) {System.out.println(zeitlupeText.getText() + " ist keine ganze Zahl!");}
-                if (i == 0) {
+                if (l == 0) {
                     zeitlupeText.setText(String.valueOf(zeitlupe));
                 } else {
-                    zeitlupe = i;
-                    zeitlupeSlider.setValue(zeitlupe);
+                    zeitlupe = l;
+                    //zeitlupeSlider.setValue(zeitlupe);
                 }
             }
         });
-        zeitlupeSlider.setMinimum(1);
+        /*zeitlupeSlider.setMinimum(1);
         zeitlupeSlider.setMaximum(99);
         zeitlupeSlider.setValue(zeitlupe);
         zeitlupeSlider.addChangeListener(new ChangeListener() {
@@ -181,10 +181,10 @@ public class Versuch {
                     zeitlupeText.setText(String.valueOf(zeitlupe));
                 }
             }
-        });
+        });*/
         menuZeitlupe.add(new JLabel("Zeitlupe: "));
         menuZeitlupe.add(zeitlupeText);
-        menuZeitlupe.add(zeitlupeSlider);
+        //menuZeitlupe.add(zeitlupeSlider);
         menuSonstiges.add(menuZeitlupe);
 
         JPanel menuAbstand = new JPanel();
@@ -237,6 +237,7 @@ public class Versuch {
         
         
         //Teilchen Menu ------------------------------------------------------------------------------------------------
+        JTextField eFeldText = new JTextField(String.valueOf(eFeldSpannung));
         JMenu menuTeilchen = new JMenu("Teilchen");
 
         JPanel menuTeilchenMasse = new JPanel();
@@ -327,6 +328,12 @@ public class Versuch {
                 teilchen.ladung = -1.602176634 * Math.pow(10, -19);
                 masseText.setText(String.valueOf(teilchen.masse));
                 ladungText.setText(String.valueOf(teilchen.ladung));
+                frequenz = Math.abs((teilchen.ladung * mFeldLadung) / (2 * Math.PI * teilchen.masse));
+                frequenzText.setText(String.valueOf(frequenz));
+                zeitlupe = Long.parseLong("300000000000");
+                zeitlupeText.setText(String.valueOf(zeitlupe));
+                eFeldSpannung = Long.parseLong("1000000000000");
+                eFeldText.setText(String.valueOf(eFeldSpannung));
             }
         });
         menuElektron.setAccelerator(KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -340,6 +347,10 @@ public class Versuch {
                 teilchen.ladung = 1.602176634 * Math.pow(10, -19);
                 masseText.setText(String.valueOf(teilchen.masse));
                 ladungText.setText(String.valueOf(teilchen.ladung));
+                frequenz = Math.abs((teilchen.ladung * mFeldLadung) / (2 * Math.PI * teilchen.masse));
+                frequenzText.setText(String.valueOf(frequenz));
+                eFeldSpannung = 100000000;
+                eFeldText.setText(String.valueOf(eFeldSpannung));
             }
         });
         menuProton.setAccelerator(KeyStroke.getKeyStroke('P', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -353,6 +364,10 @@ public class Versuch {
                 teilchen.ladung = 2 * 1.602176634 * Math.pow(10, -19);
                 masseText.setText(String.valueOf(teilchen.masse));
                 ladungText.setText(String.valueOf(teilchen.ladung));
+                frequenz = Math.abs((teilchen.ladung * mFeldLadung) / (2 * Math.PI * teilchen.masse));
+                frequenzText.setText(String.valueOf(frequenz));
+                eFeldSpannung = 100000000;
+                eFeldText.setText(String.valueOf(eFeldSpannung));
             }
         });
         menuAlpha.setAccelerator(KeyStroke.getKeyStroke('A', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -392,18 +407,17 @@ public class Versuch {
         menuFelder.add(menuMFeld);
 
         JPanel menuEFeld = new JPanel();
-        JTextField eFeldText = new JTextField(String.valueOf(eFeldSpannung));
         eFeldText.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                double d = 0;
+                long l = 0;
                 try {
-                    d = Double.parseDouble(eFeldText.getText());
-                } catch (Exception ex) {System.out.println(eFeldText.getText() + " ist keine Kommazahl!");}
-                if (d == 0) {
+                    l = Long.parseLong(eFeldText.getText());
+                } catch (Exception ex) {System.out.println(eFeldText.getText() + " ist kein Double!");}
+                if (l == 0) {
                     eFeldText.setText(String.valueOf(eFeldSpannung));
                 } else {
-                    eFeldSpannung = d;
+                    eFeldSpannung = l;
                     eFeldLinksLadung = eFeldSpannung;
                     eFeldRechtsLadung = - eFeldLinksLadung;
                     System.out.println("E-Feld Spannung: " + eFeldSpannung);
@@ -472,6 +486,9 @@ public class Versuch {
         g.setColor(c);
 
         eFeldSymbolCount = (int) Math.round(Math.abs(eFeldLinksLadung) / 10);
+        while (eFeldSymbolCount != eFeldSymbolCount % 100) {
+            eFeldSymbolCount /= 10;
+        }
         eFeldSymbolCount = Math.max(eFeldSymbolCount, 2);
         while (((eFeldSymbolCount) + ((eFeldSymbolCount - 1) * eFeldMinSymbolAbstand)) > eFeldHeight) { //midestens "eFeldMinSymbolAbstand" abstand zwischen Symbolen
             eFeldSymbolCount--;
