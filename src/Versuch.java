@@ -211,7 +211,7 @@ public class Versuch {
         menuSonstiges.add(menuAbstand);
 
         JPanel menuHeight = new JPanel();
-        JTextField heightText = new JTextField(String.valueOf(eFeldHeight / (eFeldSpalBreiteMultiplikator * 10)));
+        JTextField heightText = new JTextField(String.valueOf(eFeldHeight / (eFeldSpalBreiteMultiplikator)));
         heightText.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -222,14 +222,14 @@ public class Versuch {
                 if (i == 0) {
                     heightText.setText(String.valueOf(eFeldHeight));
                 } else {
-                    eFeldHeight = i * eFeldSpalBreiteMultiplikator * 10;
+                    eFeldHeight = i * eFeldSpalBreiteMultiplikator;
                     eFeldWidth = (int) Math.round(eFeldHeight / 2.0);
                     eFeldTotalWidth = 2 * eFeldWidth + eFeldSpaltBreite;
                     panel.repaint();
                 }
             }
         });
-        menuHeight.add(new JLabel("Durchmesser(cm): "));
+        menuHeight.add(new JLabel("Durchmesser(mm): "));
         menuHeight.add(heightText);
         menuSonstiges.add(menuHeight);
 
@@ -349,6 +349,8 @@ public class Versuch {
                 ladungText.setText(String.valueOf(teilchen.ladung));
                 frequenz = Math.abs((teilchen.ladung * mFeldLadung) / (2 * Math.PI * teilchen.masse));
                 frequenzText.setText(String.valueOf(frequenz));
+                zeitlupe = Long.parseLong("150000000");
+                zeitlupeText.setText(String.valueOf(zeitlupe));
                 eFeldSpannung = 100000000;
                 eFeldText.setText(String.valueOf(eFeldSpannung));
             }
@@ -366,6 +368,8 @@ public class Versuch {
                 ladungText.setText(String.valueOf(teilchen.ladung));
                 frequenz = Math.abs((teilchen.ladung * mFeldLadung) / (2 * Math.PI * teilchen.masse));
                 frequenzText.setText(String.valueOf(frequenz));
+                zeitlupe = Long.parseLong("150000000");
+                zeitlupeText.setText(String.valueOf(zeitlupe));
                 eFeldSpannung = 100000000;
                 eFeldText.setText(String.valueOf(eFeldSpannung));
             }
