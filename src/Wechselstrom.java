@@ -1,7 +1,10 @@
+import java.awt.*;
+
 public class Wechselstrom extends Thread
 {
     boolean stop;
     Versuch versuch;
+    double time = 0;
 
     Wechselstrom(Versuch versuch) {
         this.versuch = versuch;
@@ -11,7 +14,7 @@ public class Wechselstrom extends Thread
     public void run() {
         super.run();
         stop = false;
-        double time = 0;
+
         while (!stop) {
             try {
                 Thread.sleep(1000 / versuch.fps);

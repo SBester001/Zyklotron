@@ -9,8 +9,8 @@ public class Versuch {
         new Versuch();
     }
 
-    int frameWidth = 1500;
-    int frameHeight = 800;
+    int frameWidth = 1100;
+    int frameHeight = 850;
 
     //E-Feld -----------------------------------------------------------------------------------------------------------
     int eFeldWandDicke = 5; //wird 1 addiert
@@ -27,7 +27,7 @@ public class Versuch {
     long eFeldSpannung = 100;
     double eFeldLinksLadung = eFeldSpannung;
     int eFeldLinksPosX = 200;
-    int eFeldLinksPosY = 100;
+    int eFeldLinksPosY = 170;
     //Rechts:
     int eFeldRechtsPosX = eFeldLinksPosX + eFeldSpaltBreite;
     int eFeldRechtsPosY = eFeldLinksPosY;
@@ -54,6 +54,8 @@ public class Versuch {
     JMenuBar bar = new JMenuBar();
     JFrame frame = new JFrame();
     MyPanel panel = new MyPanel(this);
+    SinPanel sinPanel = new SinPanel(this);
+    JScrollPane scroll;
 
     JTextField masseText;
     JTextField ladungText;
@@ -75,6 +77,16 @@ public class Versuch {
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
         frame.add(panel);
         panel.setLayout(null);
+
+        sinPanel.setPreferredSize(new Dimension(eFeldTotalWidth, 100));
+        scroll = new JScrollPane(sinPanel);
+        sinPanel.setAutoscrolls(true);
+
+        scroll.setLocation(200, 10);
+        scroll.setSize(eFeldTotalWidth , 120);
+
+        panel.add(scroll);
+
 
         setMFeld();
         setMenu();
@@ -109,6 +121,8 @@ public class Versuch {
 
         rechner = new Rechner(this);
         rechner.start();
+        sinPanel.w = wechselstrom;
+        sinPanel.r = rechner;
 
     }
 
@@ -335,6 +349,8 @@ public class Versuch {
                 zeitlupeText.setText(String.valueOf(zeitlupe));
                 eFeldSpannung = Long.parseLong("1000000000000");
                 eFeldText.setText(String.valueOf(eFeldSpannung));
+                sinPanel.prevTime = 0.0;
+                sinPanel.time = 0.0;
             }
         });
         menuElektron.setAccelerator(KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -354,6 +370,8 @@ public class Versuch {
                 zeitlupeText.setText(String.valueOf(zeitlupe));
                 eFeldSpannung = 100000000;
                 eFeldText.setText(String.valueOf(eFeldSpannung));
+                sinPanel.prevTime = 0.0;
+                sinPanel.time = 0.0;
             }
         });
         menuProton.setAccelerator(KeyStroke.getKeyStroke('P', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -363,6 +381,8 @@ public class Versuch {
         menuAlpha.setAction(new AbstractAction("Alpha Teilchen") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sinPanel.prevTime = 0.0;
+                sinPanel.time = 0.0;
                 teilchen.masse = 6.6446573357 * Math.pow(10, -27);
                 teilchen.ladung = 2 * 1.602176634 * Math.pow(10, -19);
                 masseText.setText(String.valueOf(teilchen.masse));
@@ -490,7 +510,8 @@ public class Versuch {
         g.drawLine(eFeldRechtsPosX + eFeldWidth, eFeldRechtsPosY - eFeldWandDicke, eFeldRechtsPosX + eFeldWidth, eFeldRechtsPosY + eFeldHeight + eFeldWandDicke - 1);
         g.setColor(c);
 
-        eFeldSymbolCount = (int) Math.round(Math.abs(eFeldLinksLadung) / 10);
+        //eFeldSymbolCount = (int) Math.round(Math.abs(eFeldLinksLadung) / 10);
+        eFeldSymbolCount = 15;
         while (eFeldSymbolCount != eFeldSymbolCount % 100) {
             eFeldSymbolCount /= 10;
         }

@@ -1,5 +1,6 @@
 public class Rechner extends Thread {
     boolean stop;
+    boolean inEFeld;
     Versuch versuch;
 
     Rechner(Versuch versuch) {
@@ -22,9 +23,11 @@ public class Rechner extends Thread {
         double vx = 0;
         double vy = 0;
 
+        boolean wasOut = true;
+
         while (!stop) {
             boolean inMFeld = (versuch.teilchen.posX > versuch.mFeldPosX) && (versuch.teilchen.posX < (versuch.mFeldPosX + versuch.mFeldSizeX)) && (versuch.teilchen.posY > versuch.mFeldPosY) && (versuch.teilchen.posY < (versuch.mFeldPosY + versuch.mFeldSizeY));
-            boolean inEFeld = (versuch.teilchen.posX > (versuch.eFeldLinksPosX + versuch.eFeldWidth)) && (versuch.teilchen.posX < (versuch.eFeldLinksPosX + versuch.eFeldWidth + versuch.eFeldSpaltBreite)) && (versuch.teilchen.posY > versuch.eFeldLinksPosY) && (versuch.teilchen.posY < (versuch.eFeldLinksPosY + versuch.eFeldHeight));
+            inEFeld = (versuch.teilchen.posX > (versuch.eFeldLinksPosX + versuch.eFeldWidth)) && (versuch.teilchen.posX < (versuch.eFeldLinksPosX + versuch.eFeldWidth + versuch.eFeldSpaltBreite)) && (versuch.teilchen.posY > versuch.eFeldLinksPosY) && (versuch.teilchen.posY < (versuch.eFeldLinksPosY + versuch.eFeldHeight));
             double posX = 0;
             double posY = 0;
 
