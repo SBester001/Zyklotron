@@ -132,7 +132,8 @@ public class Versuch {
             public void actionPerformed(ActionEvent e) {
                 double d = 0;
                 try {
-                    d = Double.parseDouble(frequenzText.getText());
+                    frequenz = Double.parseDouble(frequenzText.getText());
+                    d = frequenz;
                 } catch (Exception ex) {System.out.println(frequenzText.getText() + " ist keine double Zahl!");}
                 if (d == 0) {
                     frequenzText.setText(String.valueOf(frequenz));

@@ -18,13 +18,17 @@ public class Wechselstrom extends Thread
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            time += (double)1 / (versuch.fps * versuch.zeitlupe);
-            versuch.eFeldLinksLadung = Math.sin(time * versuch.frequenz * 2 * Math.PI) * versuch.eFeldSpannung;
-            versuch.eFeldRechtsLadung = versuch.eFeldLinksLadung * -1;
+            if (versuch.frequenz != 0) {
+                time += (double) 1 / (versuch.fps * versuch.zeitlupe);
+                versuch.eFeldLinksLadung = Math.sin(time * versuch.frequenz * 2 * Math.PI) * versuch.eFeldSpannung;
+                versuch.eFeldRechtsLadung = versuch.eFeldLinksLadung * -1;
+            }
+                versuch.panel.repaint();
+        }
+        if (versuch.frequenz != 0) {
+            versuch.eFeldLinksLadung *= -1;
+            versuch.eFeldRechtsLadung *= -1;
             versuch.panel.repaint();
         }
-        versuch.eFeldLinksLadung *= -1;
-        versuch.eFeldRechtsLadung *= -1;
-        versuch.panel.repaint();
     }
 }
