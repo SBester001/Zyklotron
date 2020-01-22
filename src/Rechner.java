@@ -2,6 +2,8 @@ public class Rechner extends Thread {
     boolean stop;
     boolean inEFeld;
     Versuch versuch;
+    double vx = 0;
+    double vy = 0;
 
     Rechner(Versuch versuch) {
         this.versuch = versuch;
@@ -20,8 +22,8 @@ public class Rechner extends Thread {
         double y0 = startY;
         double x0 = startX;
 
-        double vx = 0;
-        double vy = 0;
+        vx = 0;
+        vy = 0;
 
         boolean wasOut = true;
 
@@ -92,6 +94,6 @@ public class Rechner extends Thread {
 
             try {Thread.sleep(1000 / versuch.fps);} catch (InterruptedException e) {e.printStackTrace();}
         }
-        System.out.println("Speed:" + Math.round(Math.sqrt(Math.pow(vx, 2) * Math.pow(vy, 2))));
+        System.out.println("Speed:" + Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2)));
     }
 }

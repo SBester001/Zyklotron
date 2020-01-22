@@ -18,5 +18,6 @@ public class MyPanel extends JPanel {
         versuch.drawEFeld(g);
         versuch.drawMFeld(g);
         versuch.drawTeilchen(g, versuch.teilchen);
+        versuch.drawSpeed(g);
     }
 }

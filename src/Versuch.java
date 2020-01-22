@@ -10,7 +10,7 @@ public class Versuch {
         new Versuch();
     }
 
-    int frameWidth = 1100;
+    int frameWidth = 1300;
     int frameHeight = 850;
 
     //E-Feld -----------------------------------------------------------------------------------------------------------
@@ -74,6 +74,8 @@ public class Versuch {
     Rechner rechner;
 
     JTextField eFeldText = new JTextField(String.valueOf(eFeldSpannung));
+
+    double speedTeiler = 1;
 
     Versuch() {
         frame.setSize(frameWidth, frameHeight);
@@ -380,6 +382,7 @@ public class Versuch {
                 zeitlupeText.setText(String.valueOf(zeitlupe));
                 eFeldSpannung = Long.parseLong("500000000000");
                 eFeldText.setText(String.valueOf(eFeldSpannung));
+                speedTeiler = 1.0E11;
             }
         });
         menuElektron.setAccelerator(KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -402,6 +405,7 @@ public class Versuch {
                 zeitlupeText.setText(String.valueOf(zeitlupe));
                 eFeldSpannung = 100000000;
                 eFeldText.setText(String.valueOf(eFeldSpannung));
+                speedTeiler = 1.0E7;
             }
         });
         menuProton.setAccelerator(KeyStroke.getKeyStroke('P', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -424,6 +428,7 @@ public class Versuch {
                 zeitlupeText.setText(String.valueOf(zeitlupe));
                 eFeldSpannung = 100000000;
                 eFeldText.setText(String.valueOf(eFeldSpannung));
+                speedTeiler = 1.0E7;
             }
         });
         menuAlpha.setAccelerator(KeyStroke.getKeyStroke('A', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -597,6 +602,15 @@ public class Versuch {
                     g.fillOval(startX + ((mFeldSymbolSize - mFeldSymbolInnerSize) / 2), startY + ((mFeldSymbolSize - mFeldSymbolInnerSize) / 2), mFeldSymbolInnerSize, mFeldSymbolInnerSize);
                 }
             }
+        }
+    }
+
+    void drawSpeed(Graphics g) {
+        if (rechner != null) {
+            double v = Math.sqrt(Math.pow(rechner.vx, 2) + Math.pow(rechner.vy, 2));
+            int rv = (int)Math.round(Math.sqrt(v / speedTeiler));
+            System.out.println("v:" + v);
+            g.fillRect(1000, 600 - rv, 25, rv);
         }
     }
 }
