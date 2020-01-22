@@ -3,6 +3,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 public class Versuch {
     public static void main(String[] args) {
@@ -67,9 +68,12 @@ public class Versuch {
     long zeitlupe = 150000000;
     int fps = 30;
     JButton play;
+    JButton umpolen;
 
     Wechselstrom wechselstrom;
     Rechner rechner;
+
+    JTextField eFeldText = new JTextField(String.valueOf(eFeldSpannung));
 
     Versuch() {
         frame.setSize(frameWidth, frameHeight);
@@ -110,19 +114,44 @@ public class Versuch {
         play.setLocation(10, 10);
         play.setText("Start");
 
+        umpolen = new JButton();
+        panel.add(umpolen);
+        umpolen.setAction(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eFeldSpannung *= -1;
+                eFeldText.setText(String.valueOf(eFeldSpannung));
+                eFeldLinksLadung = eFeldSpannung;
+                eFeldRechtsLadung = - eFeldLinksLadung;
+                System.out.println("E-Feld Spannung: " + eFeldSpannung);
+                panel.repaint();
+            }
+        });
+        umpolen.setVisible(true);
+        umpolen.setSize(100, 100);
+        umpolen.setLocation(eFeldLinksPosX + eFeldTotalWidth + 90, 10);
+        umpolen.setText("umpolen");
+
         frame.setVisible(true);
         panel.setVisible(true);
     }
 
     void start()
     {
+        sinPanel.notDraw = false;
+        sinPanel.times = new ArrayList<>();
+        sinPanel.isIn = false;
+
         wechselstrom = new Wechselstrom(this);
         wechselstrom.start();
 
         rechner = new Rechner(this);
         rechner.start();
+
         sinPanel.w = wechselstrom;
         sinPanel.r = rechner;
+
+
 
     }
 
@@ -252,7 +281,6 @@ public class Versuch {
         
         
         //Teilchen Menu ------------------------------------------------------------------------------------------------
-        JTextField eFeldText = new JTextField(String.valueOf(eFeldSpannung));
         JMenu menuTeilchen = new JMenu("Teilchen");
 
         JPanel menuTeilchenMasse = new JPanel();
@@ -339,6 +367,9 @@ public class Versuch {
         menuElektron.setAction(new AbstractAction("Elektron") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sinPanel.notDraw = true;
+                sinPanel.prevTime = 0.0;
+                sinPanel.time = 0.0;
                 teilchen.masse = 9.1093837015 * Math.pow(10, -31);
                 teilchen.ladung = -1.602176634 * Math.pow(10, -19);
                 masseText.setText(String.valueOf(teilchen.masse));
@@ -347,10 +378,8 @@ public class Versuch {
                 frequenzText.setText(String.valueOf(frequenz));
                 zeitlupe = Long.parseLong("300000000000");
                 zeitlupeText.setText(String.valueOf(zeitlupe));
-                eFeldSpannung = Long.parseLong("1000000000000");
+                eFeldSpannung = Long.parseLong("500000000000");
                 eFeldText.setText(String.valueOf(eFeldSpannung));
-                sinPanel.prevTime = 0.0;
-                sinPanel.time = 0.0;
             }
         });
         menuElektron.setAccelerator(KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -360,6 +389,9 @@ public class Versuch {
         menuProton.setAction(new AbstractAction("Proton") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sinPanel.notDraw = true;
+                sinPanel.prevTime = 0.0;
+                sinPanel.time = 0.0;
                 teilchen.masse = 1.67262192369 * Math.pow(10, -27);
                 teilchen.ladung = 1.602176634 * Math.pow(10, -19);
                 masseText.setText(String.valueOf(teilchen.masse));
@@ -370,8 +402,6 @@ public class Versuch {
                 zeitlupeText.setText(String.valueOf(zeitlupe));
                 eFeldSpannung = 100000000;
                 eFeldText.setText(String.valueOf(eFeldSpannung));
-                sinPanel.prevTime = 0.0;
-                sinPanel.time = 0.0;
             }
         });
         menuProton.setAccelerator(KeyStroke.getKeyStroke('P', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -381,6 +411,7 @@ public class Versuch {
         menuAlpha.setAction(new AbstractAction("Alpha Teilchen") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sinPanel.notDraw = true;
                 sinPanel.prevTime = 0.0;
                 sinPanel.time = 0.0;
                 teilchen.masse = 6.6446573357 * Math.pow(10, -27);
@@ -416,12 +447,12 @@ public class Versuch {
             public void actionPerformed(ActionEvent e) {
                 double d = 0;
                 try {
-                    d = Double.parseDouble(mFeldText.getText());
+                    mFeldLadung = Double.parseDouble(mFeldText.getText());
+                    d = mFeldLadung;
                 } catch (Exception ex) {System.out.println(mFeldText.getText() + " ist keine Kommazahl!");}
                 if (d == 0) {
                     mFeldText.setText(String.valueOf(mFeldLadung));
                 } else {
-                    mFeldLadung = d;
                     System.out.println("M-Feld Ladung: " + mFeldLadung);
                     panel.repaint();
                 }
@@ -463,23 +494,27 @@ public class Versuch {
     }
 
     void setMFeld() {
-        mFeldSymbolCountX = (int) Math.round(Math.abs(mFeldLadung) / 10);
-        mFeldSymbolCountX = Math.max(mFeldSymbolCountX, 3);
-        while (((mFeldSymbolCountX * mFeldSymbolSize) + ((mFeldSymbolCountX - 1) * mFeldMinSymbolAbstand)) > eFeldTotalWidth) { //midestens "mFeldMinSymbolAbstand" abstand zwischen Symbolen
-            mFeldSymbolCountX--;
+        if (mFeldLadung != 0){
+            mFeldSymbolCountX = (int) Math.round(Math.abs(mFeldLadung) / 10);
+            mFeldSymbolCountX = Math.max(mFeldSymbolCountX, 3);
+            while (((mFeldSymbolCountX * mFeldSymbolSize) + ((mFeldSymbolCountX - 1) * mFeldMinSymbolAbstand)) > eFeldTotalWidth) { //midestens "mFeldMinSymbolAbstand" abstand zwischen Symbolen
+                mFeldSymbolCountX--;
+            }
+            mFeldSymbolAbstandX = (int) Math.floor(((double) eFeldTotalWidth - (mFeldSymbolCountX * mFeldSymbolSize)) / (mFeldSymbolCountX - 1)) + 1;
+
+            mFeldSymbolCountY = (int) Math.ceil(((double) eFeldHeight - mFeldSymbolSize) / (mFeldSymbolSize + mFeldSymbolAbstandX)) + 1;
+
+            mFeldSymbolAbstandY = (int) Math.floor(((double) eFeldHeight - (mFeldSymbolCountY * mFeldSymbolSize)) / (mFeldSymbolCountY - 1)) + 1;
+
+
+            mFeldSizeX = (mFeldSymbolCountX * mFeldSymbolSize) + ((mFeldSymbolCountX - 1) * mFeldSymbolAbstandX);
+            mFeldSizeY = (mFeldSymbolCountY * mFeldSymbolSize) + ((mFeldSymbolCountY - 1) * mFeldSymbolAbstandY);
+
+            mFeldPosX = eFeldLinksPosX + ((eFeldTotalWidth - mFeldSizeX) / 2);
+            mFeldPosY = eFeldLinksPosY + ((eFeldHeight - mFeldSizeY) / 2);
+        } else {
+            mFeldSymbolCountX = 0;
         }
-        mFeldSymbolAbstandX = (int) Math.floor(((double) eFeldTotalWidth - (mFeldSymbolCountX * mFeldSymbolSize)) / (mFeldSymbolCountX - 1)) + 1;
-
-        mFeldSymbolCountY = (int) Math.ceil(((double) eFeldHeight - mFeldSymbolSize) / (mFeldSymbolSize + mFeldSymbolAbstandX)) + 1;
-
-        mFeldSymbolAbstandY = (int) Math.floor(((double) eFeldHeight - (mFeldSymbolCountY * mFeldSymbolSize)) / (mFeldSymbolCountY - 1)) + 1;
-
-
-        mFeldSizeX = (mFeldSymbolCountX * mFeldSymbolSize) + ((mFeldSymbolCountX - 1) * mFeldSymbolAbstandX);
-        mFeldSizeY = (mFeldSymbolCountY * mFeldSymbolSize) + ((mFeldSymbolCountY - 1) * mFeldSymbolAbstandY);
-
-        mFeldPosX = eFeldLinksPosX + ((eFeldTotalWidth - mFeldSizeX) / 2);
-        mFeldPosY = eFeldLinksPosY + ((eFeldHeight - mFeldSizeY) / 2);
     }
 
     void drawTeilchen(Graphics g, Teilchen teilchen) {
@@ -511,7 +546,7 @@ public class Versuch {
         g.setColor(c);
 
         //eFeldSymbolCount = (int) Math.round(Math.abs(eFeldLinksLadung) / 10);
-        eFeldSymbolCount = 15;
+        eFeldSymbolCount = 12;
         while (eFeldSymbolCount != eFeldSymbolCount % 100) {
             eFeldSymbolCount /= 10;
         }

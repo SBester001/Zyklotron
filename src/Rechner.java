@@ -86,11 +86,12 @@ public class Rechner extends Thread {
             versuch.teilchen.posX = posX;
             versuch.teilchen.posY = posY;
 
-
-            versuch.drawTeilchen(versuch.panel.getGraphics(), versuch.teilchen);
             versuch.panel.repaint((int) Math.round(tempX - versuch.teilchenSize), (int) Math.round(tempY - versuch.teilchenSize), versuch.teilchenSize * 2, versuch.teilchenSize * 2);
+            versuch.drawTeilchen(versuch.panel.getGraphics(), versuch.teilchen);
+
 
             try {Thread.sleep(1000 / versuch.fps);} catch (InterruptedException e) {e.printStackTrace();}
         }
+        System.out.println("Speed:" + Math.round(Math.sqrt(Math.pow(vx, 2) * Math.pow(vy, 2))));
     }
 }
