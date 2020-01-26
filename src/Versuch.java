@@ -90,6 +90,7 @@ public class Versuch {
 
         scroll.setLocation(200, 10);
         scroll.setSize(eFeldTotalWidth , 120);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         panel.add(scroll);
 

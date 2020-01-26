@@ -45,23 +45,25 @@ public class Rechner extends Thread {
             }
             t = (double)1 / (versuch.fps * versuch.zeitlupe);
 
-            double temp = (((B * d * vy + U) * Math.sin((B * q * t) / m)) / (B * d)) + vx * Math.cos((B * q * t) / m);
-            vy = -1 * ((-1 * (B * d * vy + U) * Math.cos((B * q * t) / m) + B * d * vx * Math.sin((B * q * t) / m) + U) / (B * d));
-            vx = temp;
-
-            versuch.teilchen.speedX = vx;
-            versuch.teilchen.speedY = vy;
-
             y0 = versuch.teilchen.posY;
             x0 = versuch.teilchen.posX;
 
             if (!inMFeld || B == 0) {
+                vx = ((q * U * t) / (m * d)) + vx;
+
                 posY = vy * t + y0;
                 posX = ((q * U * t * t) / (2 * m * d)) + vx * t + x0;
             } else {
+                double temp = (((B * d * vy + U) * Math.sin((B * q * t) / m)) / (B * d)) + vx * Math.cos((B * q * t) / m);
+                vy = -1 * ((-1 * (B * d * vy + U) * Math.cos((B * q * t) / m) + B * d * vx * Math.sin((B * q * t) / m) + U) / (B * d));
+                vx = temp;
+
                 posX = (B * B * d * q * x0 - m * (B * d * vy + U) * Math.cos((B * q * t) / m) + B * d * m * vx * Math.sin((B * q * t) / m) + B * d * m * vy + m * U) / (B * B * d * q);
                 posY = (B * (B * d * q * y0 - d * m * vx - q * t * U) + m * (B * d * vy + U) * Math.sin((B * q * t) / m) + B * d * m * vx * Math.cos((B * q * t) / m)) / (B * B * d * q);
             }
+
+            versuch.teilchen.speedX = vx;
+            versuch.teilchen.speedY = vy;
 
             double tempX = versuch.teilchen.posX;
             double tempY = versuch.teilchen.posY;
