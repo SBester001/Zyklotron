@@ -455,12 +455,12 @@ public class Versuch {
                 try {
                     mFeldLadung = Double.parseDouble(mFeldText.getText());
                     d = mFeldLadung;
+                    panel.repaint();
                 } catch (Exception ex) {System.out.println(mFeldText.getText() + " ist keine Kommazahl!");}
                 if (d == 0) {
                     mFeldText.setText(String.valueOf(mFeldLadung));
                 } else {
                     System.out.println("M-Feld Ladung: " + mFeldLadung);
-                    panel.repaint();
                 }
             }
         });
